@@ -10,7 +10,8 @@
 import MusicList from 'components/music-list/music-list'
 import { getSingerDetail } from 'api/singer'
 import { ERR_OK } from 'api/config'
-import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
+// import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
+import { createSong } from 'common/js/song'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -39,36 +40,36 @@ export default {
         this.$router.push('/singer')
         return
       }
-      // getSingerDetail(this.singer.id).then((res) => {
-      //   if (res.code === ERR_OK) {
-      //     this.songs = this._normalizeSongs(res.data.list)
-      //   }
-      // })
       getSingerDetail(this.singer.id).then((res) => {
         if (res.code === ERR_OK) {
-          processSongsUrl(this._normalizeSongs(res.data.list)).then((songs) => {
-            this.songs = songs
-          })
+          this.songs = this._normalizeSongs(res.data.list)
         }
       })
-    },
-    _normalizeSongs (list) {
-      // let ret = []
-      // list.forEach((item) => {
-      //   let { musicData } = item
-      //   if (musicData.songid && musicData.albummid) {
-      //     ret.push(createSong(musicData))
+      // getSingerDetail(this.singer.id).then((res) => {
+      //   if (res.code === ERR_OK) {
+      //     processSongsUrl(this._normalizeSongs(res.data.list)).then((songs) => {
+      //       this.songs = songs
+      //     })
       //   }
       // })
-      // return ret
+    },
+    _normalizeSongs (list) {
       let ret = []
       list.forEach((item) => {
         let { musicData } = item
-        if (isValidMusic(musicData)) {
+        if (musicData.songid && musicData.albummid) {
           ret.push(createSong(musicData))
         }
       })
       return ret
+      // let ret = []
+      // list.forEach((item) => {
+      //   let { musicData } = item
+      //   if (isValidMusic(musicData)) {
+      //     ret.push(createSong(musicData))
+      //   }
+      // })
+      // return ret
     }
   },
   components: {
